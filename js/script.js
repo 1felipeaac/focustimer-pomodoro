@@ -1,5 +1,5 @@
 import { Modal } from "./modal.js";
-import Sound from "./sounds.js"
+import Sound from "./sounds.js";
 
 const minutes = Modal.minutes
 const seconds = Modal.seconds
