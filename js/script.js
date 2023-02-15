@@ -18,7 +18,13 @@ Modal.buttonPlay.addEventListener("click", ()=>{
     
         Modal.toggle(Modal.buttonPlay, Modal.buttonPause)
 
-        Modal.music.play();
+        if(Modal.stopCircle.classList.contains('hide'))
+            Modal.toggle(Modal.setTime, Modal.stopCircle)
+        
+        Modal.music.load();
+        setTimeout(function(){
+            Modal.music.play();
+        },0)
 
     }
 
@@ -27,22 +33,8 @@ Modal.buttonPause.addEventListener("click", ()=>{
 
     clearInterval(Modal.intervalHandle);
 
-    var playPromise = Modal.music.play();
-    if (playPromise !== undefined) {
-        playPromise.then(_ => {
-          // Automatic playback started!
-          // Show playing UI.
-          // We can now safely pause video...
-          Modal.music.pause()
-        })
-        .catch(error => {
-          // Auto-play was prevented
-          // Show paused UI.
-          alert(error)
-        });
-      }
-
-    // Modal.music.pause()
+    Modal.music.pause()
+        
     Modal.toggle(Modal.buttonPlay, Modal.buttonPause)
 
 })
@@ -54,8 +46,6 @@ Modal.setTime.addEventListener("click", ()=>{
     if(setMinutes != 0 || setSeconds != 0){
         minutes.innerText = Modal.checkValueTimer(setMinutes)
         seconds.innerText = Modal.checkValueTimer(setSeconds)
-
-        Modal.toggle(Modal.setTime, Modal.stopCircle)
     }
 
 })
