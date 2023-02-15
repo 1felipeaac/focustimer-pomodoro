@@ -1,89 +1,76 @@
-import { Modal } from "./modal.js";
-import Sound from "./sounds.js"
+import Sounds from "./sounds.js"
+export const Modal = {
 
-const minutes = Modal.minutes
-const seconds = Modal.seconds
+    intervalHandle: "",
 
-const sound = Sound()
+    icons: document.querySelector(".icon-buttons"),
 
-let timer = 0;
+    timer: document.querySelector("#timer"),
 
-Modal.buttonPlay.addEventListener("click", ()=>{
+    buttonPlay: document.querySelector(".play"),
+    buttonPause: document.querySelector(".pause"),
 
-    let min = Number(minutes.innerText)
-    let sec = Number(seconds.innerText)
-    timer = min * 60 + sec
+    setTime: document.querySelector(".set"),
+    stopCircle: document.querySelector(".stop"),
 
-    if(min != 0 || sec != 0){
+    volumeMedium: document.querySelector(".medium"),
+    volumeMute: document.querySelector(".mute"),
 
-        Modal.startTimer(timer)
-    
-        Modal.toggle(Modal.buttonPlay, Modal.buttonPause)
+    minutes: document.querySelector("#minutes"),
+    seconds: document.querySelector("#seconds"),
 
-        if(Modal.stopCircle.classList.contains('hide'))
-            Modal.toggle(Modal.setTime, Modal.stopCircle)
+    // music: document.querySelector(".music"),
+    // alarm: document.querySelector(".alarm"),
 
-        if(Modal.volumeMedium.classList.contains('hide'))
-        Modal.toggle(Modal.volumeMedium, Modal.volumeMute)
+    toggle(element1, element2){
+        element1.classList.toggle("hide")
+        element2.classList.toggle("hide")
+    },
+
+    startTimer(duration) {
+        var interval = duration, getMinutes, getSeconds;
         
-        sound.pressButton()
-        sound.bgAudio.play()
-
-    }
-
-})
-Modal.buttonPause.addEventListener("click", ()=>{
-
-    clearInterval(Modal.intervalHandle);
-
-    sound.pressButton()
-    sound.bgAudio.pause()
-
-    if(Modal.volumeMute.classList.contains('hide'))
-        Modal.toggle(Modal.volumeMedium, Modal.volumeMute)
-        
-    Modal.toggle(Modal.buttonPlay, Modal.buttonPause)
-
-})
-Modal.setTime.addEventListener("click", ()=>{
-
-    sound.pressButton()
-
-    const setMinutes = Number(prompt("Minutos: "))
-    const setSeconds = Number(prompt("Segundos: "))
-
-    if(setMinutes != 0 || setSeconds != 0){
-        minutes.innerText = Modal.checkValueTimer(setMinutes)
-        seconds.innerText = Modal.checkValueTimer(setSeconds)
-    }
-
-})
-
-Modal.stopCircle.addEventListener("click", ()=>{
-
-    clearInterval(Modal.intervalHandle);
-
-    minutes.innerText = "00"
-    seconds.innerText = "00"
-
-    sound.pressButton()
-    Modal.toggle(Modal.setTime, Modal.stopCircle)
-
-    if(Modal.buttonPlay.classList.contains('hide'))
-        Modal.toggle(Modal.buttonPlay, Modal.buttonPause)
-        sound.bgAudio.pause()
+        Modal.intervalHandle = setInterval(function () {
+            
+            getMinutes = parseInt(interval / 60, 10);
+            getSeconds = parseInt(interval % 60, 10);
     
-})
-Modal.volumeMedium.addEventListener("click", ()=>{
+            getMinutes = Modal.checkValueTimer(getMinutes)
+            getSeconds = Modal.checkValueTimer(getSeconds)
     
-    // Modal.music.volume = 0
-    sound.bgAudio.pause()
-    Modal.toggle(Modal.volumeMedium, Modal.volumeMute)
-})
-Modal.volumeMute.addEventListener("click", ()=>{
+            Modal.minutes.textContent = getMinutes;
+            Modal.seconds.textContent = getSeconds;
+    
+            if (--interval < 0) {
+                clearInterval(Modal.intervalHandle)
+                Sounds().timeEnd()
+                Sounds().bgAudio.pause()
+                // Modal.music.pause()
 
-    // Modal.music.volume = 1;
-    if(minutes.innerText != 0 || seconds.innerText != 0)
-        sound.bgAudio.play()
-        Modal.toggle(Modal.volumeMedium, Modal.volumeMute)
-})
+                // var timeOut = 15
+                // var alarmHadle = setInterval(() => {
+
+                //     Modal.alarm.load()
+                //     var alarmInterrupt = setTimeout(function(){
+                //         Modal.alarm.play()
+
+                //     },0)
+
+                //     if(--timeOut < 0){
+                //         clearInterval(alarmHadle)
+                //         clearTimeout(alarmInterrupt)
+                //         Modal.toggle(Modal.setTime, Modal.stopCircle)
+                //         Modal.toggle(Modal.buttonPause, Modal.buttonPlay)
+                //         Modal.alarm.pause()
+                //     }
+                // }, 250);             
+            }
+        }, 1000);
+    },
+
+    checkValueTimer(time){
+        return time < 10 ? "0" + time : time;
+    }
+}
+
+
