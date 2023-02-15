@@ -1,53 +1,87 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
-    <meta name="description" content="Temporizador estilo Pomodoro">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <script src="./js/script.js" defer type="module"></script>
-    <title>FocusTimer - Pomodoro</title>
-</head>
-<body>
-    <main>
-        <div id="timer">
-            <span id="minutes">00</span>
-            <span id="twoDot">:</span>
-            <span id="seconds">00</span>
-        </div>
-        <div id="buttons">
-            <button class="icon-buttons play" id="play-circle">
-                <img src="https://raw.githubusercontent.com/1felipeaac/focustimer-pomodoro/34de124b12b18d640205ab3e9c0214bc92fcbb6b/assets/play-circle.svg" alt="play circle">
-            </button>
-            <button class="icon-buttons pause hide" id="pause-circle">
-                <img src="https://raw.githubusercontent.com/1felipeaac/focustimer-pomodoro/34de124b12b18d640205ab3e9c0214bc92fcbb6b/assets/pause-circle.svg" alt="pause circle">
-            </button>
-            <button class="icon-buttons set" id="setTime">
-                <img src="https://raw.githubusercontent.com/1felipeaac/focustimer-pomodoro/34de124b12b18d640205ab3e9c0214bc92fcbb6b/assets/stopwatch.svg" alt="watch">
-            </button>
-            <button class="icon-buttons stop hide" id="stop-circle">
-                <img src="https://raw.githubusercontent.com/1felipeaac/focustimer-pomodoro/34de124b12b18d640205ab3e9c0214bc92fcbb6b/assets/stop-circle.svg" alt="stop watch">
-            </button>
-        </div>
-    </main>
-    <footer>
-        <audio class="music hide">
-            <source src="https://github.com/1felipeaac/focustimer-pomodoro/blob/main/midia/Frozen%20in%20Love%20-%20Aakash%20Gandhi.mp3" type="audio/mpeg">
-        </audio>
+import { Modal } from "./modal.js";
 
-        <audio class="alarm hide">
-            <source src="https://github.com/1felipeaac/focustimer-pomodoro/blob/main/midia/Mechanical%20Clock%20Ring.mp3" type="audio/mpeg">
-        </audio>
-        <button class="icon-buttons medium" id="volume-medium">
-            <img src="https://raw.githubusercontent.com/1felipeaac/focustimer-pomodoro/34de124b12b18d640205ab3e9c0214bc92fcbb6b/assets/volume-medium.svg" alt="volume-medium">
-        </button>
-        <button class="icon-buttons mute hide" id="volume-mute">
-            <img src="https://raw.githubusercontent.com/1felipeaac/focustimer-pomodoro/34de124b12b18d640205ab3e9c0214bc92fcbb6b/assets/volume-mute.svg" alt="volume-mute">
-        </button>
-    </footer>
-</body>
-</html>
+const minutes = Modal.minutes
+const seconds = Modal.seconds
+
+let timer = 0;
+// var playPromise = Modal.music.play();
+
+Modal.buttonPlay.addEventListener("click", ()=>{
+
+    let min = Number(minutes.innerText)
+    let sec = Number(seconds.innerText)
+    timer = min * 60 + sec
+
+    if(min != 0 || sec != 0){
+
+        Modal.startTimer(timer)
+    
+        Modal.toggle(Modal.buttonPlay, Modal.buttonPause)
+
+        Modal.music.play();
+
+    }
+
+})
+Modal.buttonPause.addEventListener("click", ()=>{
+
+    clearInterval(Modal.intervalHandle);
+
+    var playPromise = Modal.music.play();
+    if (playPromise !== undefined) {
+        playPromise.then(_ => {
+          // Automatic playback started!
+          // Show playing UI.
+          // We can now safely pause video...
+          Modal.music.pause()
+        })
+        .catch(error => {
+          // Auto-play was prevented
+          // Show paused UI.
+          alert(error)
+        });
+      }
+
+    // Modal.music.pause()
+    Modal.toggle(Modal.buttonPlay, Modal.buttonPause)
+
+})
+Modal.setTime.addEventListener("click", ()=>{
+
+    const setMinutes = Number(prompt("Minutos: "))
+    const setSeconds = Number(prompt("Segundos: "))
+
+    if(setMinutes != 0 || setSeconds != 0){
+        minutes.innerText = Modal.checkValueTimer(setMinutes)
+        seconds.innerText = Modal.checkValueTimer(setSeconds)
+
+        Modal.toggle(Modal.setTime, Modal.stopCircle)
+    }
+
+})
+
+Modal.stopCircle.addEventListener("click", ()=>{
+
+    clearInterval(Modal.intervalHandle);
+
+    minutes.innerText = "00"
+    seconds.innerText = "00"
+
+    Modal.music.pause()
+    Modal.toggle(Modal.setTime, Modal.stopCircle)
+
+    if(Modal.buttonPlay.classList.contains('hide'))
+        Modal.toggle(Modal.buttonPlay, Modal.buttonPause)
+    
+})
+Modal.volumeMedium.addEventListener("click", ()=>{
+    
+    Modal.music.volume = 0
+    Modal.toggle(Modal.volumeMedium, Modal.volumeMute)
+})
+Modal.volumeMute.addEventListener("click", ()=>{
+
+    Modal.music.volume = 1;
+    Modal.toggle(Modal.volumeMedium, Modal.volumeMute)
+})
+
