@@ -46,9 +46,18 @@ export const Modal = {
 
                 var timeOut = 15
                 var alarmHadle = setInterval(() => {
-                    Modal.alarm.play()
+                    
+                    Modal.alarm.load()
+                    var alarmInterrupt = setTimeout(function(){
+                        Modal.alarm.play()
+
+                    },0)
+
                     if(--timeOut < 0){
                         clearInterval(alarmHadle)
+                        clearTimeout(alarmInterrupt)
+                        Modal.toggle(Modal.setTime, Modal.stopCircle)
+                        Modal.toggle(Modal.buttonPause, Modal.buttonPlay)
                         Modal.alarm.pause()
                     }
                 }, 250);             
