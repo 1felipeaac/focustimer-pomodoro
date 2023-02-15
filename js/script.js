@@ -4,6 +4,7 @@ const minutes = Modal.minutes
 const seconds = Modal.seconds
 
 let timer = 0;
+// var playPromise = Modal.music.play();
 
 Modal.buttonPlay.addEventListener("click", ()=>{
 
@@ -17,8 +18,7 @@ Modal.buttonPlay.addEventListener("click", ()=>{
     
         Modal.toggle(Modal.buttonPlay, Modal.buttonPause)
 
-        Modal.music.play()
-        Modal.music.loop = true;
+        Modal.music.play();
 
     }
 
@@ -26,7 +26,23 @@ Modal.buttonPlay.addEventListener("click", ()=>{
 Modal.buttonPause.addEventListener("click", ()=>{
 
     clearInterval(Modal.intervalHandle);
-    Modal.music.pause()
+
+    var playPromise = Modal.music.play();
+    if (playPromise !== undefined) {
+        playPromise.then(_ => {
+          // Automatic playback started!
+          // Show playing UI.
+          // We can now safely pause video...
+          Modal.music.pause()
+        })
+        .catch(error => {
+          // Auto-play was prevented
+          // Show paused UI.
+          alert(error)
+        });
+      }
+
+    // Modal.music.pause()
     Modal.toggle(Modal.buttonPlay, Modal.buttonPause)
 
 })
