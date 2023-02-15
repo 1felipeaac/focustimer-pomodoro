@@ -1,10 +1,12 @@
 import { Modal } from "./modal.js";
+import Sound from "./sounds.js"
 
 const minutes = Modal.minutes
 const seconds = Modal.seconds
 
+const sound = Sound()
+
 let timer = 0;
-// var playPromise = Modal.music.play();
 
 Modal.buttonPlay.addEventListener("click", ()=>{
 
@@ -20,11 +22,12 @@ Modal.buttonPlay.addEventListener("click", ()=>{
 
         if(Modal.stopCircle.classList.contains('hide'))
             Modal.toggle(Modal.setTime, Modal.stopCircle)
+
+        if(Modal.volumeMedium.classList.contains('hide'))
+        Modal.toggle(Modal.volumeMedium, Modal.volumeMute)
         
-        Modal.music.load();
-        setTimeout(function(){
-            Modal.music.play();
-        },0)
+        sound.pressButton()
+        sound.bgAudio.play()
 
     }
 
@@ -33,12 +36,18 @@ Modal.buttonPause.addEventListener("click", ()=>{
 
     clearInterval(Modal.intervalHandle);
 
-    Modal.music.pause()
+    sound.pressButton()
+    sound.bgAudio.pause()
+
+    if(Modal.volumeMute.classList.contains('hide'))
+        Modal.toggle(Modal.volumeMedium, Modal.volumeMute)
         
     Modal.toggle(Modal.buttonPlay, Modal.buttonPause)
 
 })
 Modal.setTime.addEventListener("click", ()=>{
+
+    sound.pressButton()
 
     const setMinutes = Number(prompt("Minutos: "))
     const setSeconds = Number(prompt("Segundos: "))
@@ -57,20 +66,24 @@ Modal.stopCircle.addEventListener("click", ()=>{
     minutes.innerText = "00"
     seconds.innerText = "00"
 
-    Modal.music.pause()
+    sound.pressButton()
     Modal.toggle(Modal.setTime, Modal.stopCircle)
 
     if(Modal.buttonPlay.classList.contains('hide'))
         Modal.toggle(Modal.buttonPlay, Modal.buttonPause)
+        sound.bgAudio.pause()
     
 })
 Modal.volumeMedium.addEventListener("click", ()=>{
     
-    Modal.music.volume = 0
+    // Modal.music.volume = 0
+    sound.bgAudio.pause()
     Modal.toggle(Modal.volumeMedium, Modal.volumeMute)
 })
 Modal.volumeMute.addEventListener("click", ()=>{
 
-    Modal.music.volume = 1;
-    Modal.toggle(Modal.volumeMedium, Modal.volumeMute)
+    // Modal.music.volume = 1;
+    if(minutes.innerText != 0 || seconds.innerText != 0)
+        sound.bgAudio.play()
+        Modal.toggle(Modal.volumeMedium, Modal.volumeMute)
 })
