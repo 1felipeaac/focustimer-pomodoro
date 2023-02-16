@@ -1,4 +1,4 @@
-import { Modal } from "./modal.js";
+import {Modal} from "./modal.js";
 import Sound from "./sounds.js";
 
 const minutes = Modal.minutes
@@ -27,7 +27,6 @@ Modal.buttonPlay.addEventListener("click", ()=>{
         Modal.toggle(Modal.volumeMedium, Modal.volumeMute)
         
         sound.pressButton()
-        sound.bgAudio.play()
 
     }
 
@@ -37,7 +36,7 @@ Modal.buttonPause.addEventListener("click", ()=>{
     clearInterval(Modal.intervalHandle);
 
     sound.pressButton()
-    sound.bgAudio.pause()
+    Modal.pauseBgSound()
 
     if(Modal.volumeMute.classList.contains('hide'))
         Modal.toggle(Modal.volumeMedium, Modal.volumeMute)
@@ -71,19 +70,18 @@ Modal.stopCircle.addEventListener("click", ()=>{
 
     if(Modal.buttonPlay.classList.contains('hide'))
         Modal.toggle(Modal.buttonPlay, Modal.buttonPause)
-        sound.bgAudio.pause()
+        Modal.pauseBgSound()
     
 })
 Modal.volumeMedium.addEventListener("click", ()=>{
     
-    // Modal.music.volume = 0
-    sound.bgAudio.pause()
+    Modal.volumeOff()
     Modal.toggle(Modal.volumeMedium, Modal.volumeMute)
 })
 Modal.volumeMute.addEventListener("click", ()=>{
 
-    // Modal.music.volume = 1;
     if(minutes.innerText != 0 || seconds.innerText != 0)
-        sound.bgAudio.play()
+        Modal.volumeOn()
         Modal.toggle(Modal.volumeMedium, Modal.volumeMute)
 })
+
