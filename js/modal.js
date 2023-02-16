@@ -1,4 +1,5 @@
-import Sounds from "./sounds.js"
+import Sound from "./sounds.js"
+const sound = Sound()
 export const Modal = {
 
     intervalHandle: "",
@@ -19,9 +20,6 @@ export const Modal = {
     minutes: document.querySelector("#minutes"),
     seconds: document.querySelector("#seconds"),
 
-    // music: document.querySelector(".music"),
-    // alarm: document.querySelector(".alarm"),
-
     toggle(element1, element2){
         element1.classList.toggle("hide")
         element2.classList.toggle("hide")
@@ -29,6 +27,7 @@ export const Modal = {
 
     startTimer(duration) {
         var interval = duration, getMinutes, getSeconds;
+        sound.bgAudio.play()
         
         Modal.intervalHandle = setInterval(function () {
             
@@ -42,35 +41,33 @@ export const Modal = {
             Modal.seconds.textContent = getSeconds;
     
             if (--interval < 0) {
-                clearInterval(Modal.intervalHandle)
-                Sounds().timeEnd()
-                Sounds().bgAudio.pause()
-                // Modal.music.pause()
+                Modal.intervalHandle = clearInterval(Modal.intervalHandle)
+               
+                Modal.toggle(Modal.setTime, Modal.stopCircle)
+                Modal.toggle(Modal.buttonPause, Modal.buttonPlay)
 
-                // var timeOut = 15
-                // var alarmHadle = setInterval(() => {
-
-                //     Modal.alarm.load()
-                //     var alarmInterrupt = setTimeout(function(){
-                //         Modal.alarm.play()
-
-                //     },0)
-
-                //     if(--timeOut < 0){
-                //         clearInterval(alarmHadle)
-                //         clearTimeout(alarmInterrupt)
-                //         Modal.toggle(Modal.setTime, Modal.stopCircle)
-                //         Modal.toggle(Modal.buttonPause, Modal.buttonPlay)
-                //         Modal.alarm.pause()
-                //     }
-                // }, 250);             
+                sound.timeEnd()
+                Modal.pauseBgSound()
+          
             }
         }, 1000);
     },
 
     checkValueTimer(time){
         return time < 10 ? "0" + time : time;
-    }
+    },
+
+    pauseBgSound(){
+        sound.bgAudio.pause()
+    },
+
+    volumeOn(){
+        sound.bgAudio.volume = 1
+    },
+
+    volumeOff(){
+        sound.bgAudio.volume = 0
+    },
 }
 
 
