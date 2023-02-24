@@ -56,7 +56,7 @@ export const Modal = {
 
                 Modal.setPause = false
             }
-        }, 1);
+        }, 1000);
     },
 
     checkValueTimer(time){
