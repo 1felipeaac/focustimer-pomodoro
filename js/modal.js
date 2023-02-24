@@ -5,6 +5,8 @@ export const Modal = {
     intervalHandle: "",
 
     setPause: false,
+    
+    header : document.querySelector("header"),
 
     focus: document.querySelector("#focus"),
 
@@ -85,6 +87,8 @@ export const Modal = {
         sound.timeEnd()
         Modal.pauseBgSound()
         
+        Modal.header.classList.add('hide')
+        
     },
 
     durationTime(duration){
@@ -96,6 +100,8 @@ export const Modal = {
             localStorage.setItem("focusTimer", JSON.stringify(Modal.listFocus))
 
             Modal.focus.innerHTML = Modal.calcTimingFocus()
+            
+            Modal.header.classList.remove('hide')
         }
 
     },
