@@ -18,7 +18,9 @@ body{
     background: var(--bg-color);
     font-family: var(--ff-timer);
     color: var(--fc-timer);
+
     display: grid;
+
     min-height: 100vh;
 }
 button{
@@ -31,9 +33,25 @@ button{
     display: none;
 }
 
-main{
+header, main{
    justify-self: center;
-   align-self: end;
+   align-self: center;
+
+   text-align: center;
+}
+
+#focus{
+    font-size: clamp(1rem, 1rem + 5vw, 2.2rem);
+    color: #FFFFFF;
+
+    background: var(--bg-color-buttons);
+    border-radius: 9999px;
+
+    width: 22.75rem;
+
+    text-align: center;
+
+    padding: 1rem;
 }
 
 #timer{
