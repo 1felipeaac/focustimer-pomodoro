@@ -4,6 +4,10 @@ export const Modal = {
 
     intervalHandle: "",
 
+    setPause: false,
+
+    focus: document.querySelector("#focus"),
+
     icons: document.querySelector(".icon-buttons"),
 
     timer: document.querySelector("#timer"),
@@ -20,6 +24,8 @@ export const Modal = {
     minutes: document.querySelector("#minutes"),
     seconds: document.querySelector("#seconds"),
 
+    listFocus: [],
+
     toggle(element1, element2){
         element1.classList.toggle("hide")
         element2.classList.toggle("hide")
@@ -27,7 +33,10 @@ export const Modal = {
 
     startTimer(duration) {
         var interval = duration, getMinutes, getSeconds;
+
         sound.bgAudio.play()
+
+        sound.bgAudio.loop = true
         
         Modal.intervalHandle = setInterval(function () {
             
@@ -41,16 +50,13 @@ export const Modal = {
             Modal.seconds.textContent = getSeconds;
     
             if (--interval < 0) {
-                Modal.intervalHandle = clearInterval(Modal.intervalHandle)
-               
-                Modal.toggle(Modal.setTime, Modal.stopCircle)
-                Modal.toggle(Modal.buttonPause, Modal.buttonPlay)
+                Modal.finishTime()
 
-                sound.timeEnd()
-                Modal.pauseBgSound()
-          
+                Modal.durationTime(duration)
+
+                Modal.setPause = false
             }
-        }, 1000);
+        }, 1);
     },
 
     checkValueTimer(time){
@@ -68,6 +74,60 @@ export const Modal = {
     volumeOff(){
         sound.bgAudio.volume = 0
     },
+
+    finishTime(){
+        Modal.clearIntervalHandle()
+               
+        Modal.toggle(Modal.setTime, Modal.stopCircle)
+        Modal.toggle(Modal.buttonPause, Modal.buttonPlay)
+        Modal.toggle(Modal.volumeMedium, Modal.volumeMute)
+
+        sound.timeEnd()
+        Modal.pauseBgSound()
+        
+    },
+
+    durationTime(duration){
+
+        if(Modal.setPause == false){
+
+            Modal.listFocus.push(duration)
+
+            localStorage.setItem("focusTimer", JSON.stringify(Modal.listFocus))
+
+            Modal.focus.innerHTML = Modal.calcTimingFocus()
+        }
+
+    },
+
+    clearIntervalHandle(){
+        clearInterval(Modal.intervalHandle)
+    },
+
+    calcTimingFocus(){
+        var focusTimer = JSON.parse(window.localStorage.getItem('focusTimer'))
+
+        var sum = 0
+        for (const time of focusTimer) {
+            sum += Number(time)
+        }
+
+        var hour = 0
+        var min = parseInt(sum / 60, 10)
+
+        if (min >=60){
+            var h = parseInt(min / 60, 10)
+            hour = Modal.checkValueTimer(h)
+            min = min % 60
+        }
+
+        min = Modal.checkValueTimer(min)
+
+        var editHour = hour > 1 ? 'horas' : 'hora'
+        var editMin = min > 1 ? 'minutos' : 'minuto'
+        
+        return `${hour} ${editHour} e ${min} ${editMin} de foco. Parabéns!!`
+
+        
+    }
 }
-
-
